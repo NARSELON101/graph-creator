@@ -14,4 +14,4 @@ class Graph(models.Model):
         return reverse("graphs:open_graph", kwargs={'graph_id': str(self.id)})
 
     def __str__(self):
-        return f'{self.user.first_name}_{self.id}'
+        return f'{self.user.id}_{self.path}'

@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    # BASE_DIR / "file_storage",
+    BASE_DIR / "graph_storage",
     # BASE_DIR / 'static'
 ]
 
