@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "graphs"
+    "graphs",
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -45,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -122,6 +124,21 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "graph_storage",
     # BASE_DIR / 'static'
+]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6380",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',  # Add your development machine's IP address here
 ]
 
 # Default primary key field type

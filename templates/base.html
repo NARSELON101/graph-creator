@@ -3,16 +3,11 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://telegram.org/js/telegram-web-app.js"></script>
         <title>SCIENCE LE</title>
         <link rel="stylesheet"
               href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
         <meta name="theme-color" content="#ffffff">
         <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&amp;display=swap"
-              rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <link
@@ -24,14 +19,35 @@
         {% include 'navbar.html' %}
         <main>
             {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
+                {% for message in messages %}
+                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                      <div id="liveToast" class="toast liveToast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+                            <div class="toast-header bg-{{ message.tags }} border-0">
+                              <strong class="me-auto">{{ message.tags|capfirst }}</strong>
+                              <small>{% now 'Y-m-d' %}</small>
+                              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                              {{ message|capfirst }}
+                            </div>
+                        
+                      </div>
+                    </div>
+                {% endfor %}
+{#                <ul class="messages">#}
+{#                    {% for message in messages %}#}
+{#                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
             {% endif %}
             {% block content %}
             {% endblock %}
         </main>
+        <script>
+            var toastLiveExample = document.getElementsByClassName('liveToast')
+            for (let toast of toastLiveExample) {
+                var toast_ = new bootstrap.Toast(toast)
+                toast_.show()}
+        </script>
     </body>
 </html>

@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+    {# Выключение стандартного вывода ошибок в форме #}
+    <style>
+    .errorlist {
+        display: none;
+    }
+    </style>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}

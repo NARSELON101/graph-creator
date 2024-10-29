@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-<div>
-    {{ graph.id }}
-</div>
+{% block content %}
+    <div>
+        {{ table | safe }}
+    </div>
+{% endblock %}
+
 <!--        <h1>Telegram User Data</h1>-->
 <!--    <pre id="user-data">Loading...</pre>-->
 <!--    <img id="user-photo" alt="User Photo" style="display: none; width: 150px; height: 150px;">-->

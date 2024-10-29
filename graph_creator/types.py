@@ -27,7 +27,7 @@ class ContentTypeRestrictedFileField(forms.FileField):
         try:
             content_type = data.content_type
             if content_type not in self.content_types:
-                raise forms.ValidationError(_('Filetype not supported.'))
+                raise forms.ValidationError(_('File Not Supported'))
         except AttributeError:
             pass
 
