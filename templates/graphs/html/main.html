@@ -1,7 +1,57 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div>
+    <div class="container-fluid p-0">
+        <div class="row" style="width: 80%">
+            <div class="col-md-auto">
+                <form method="post" class="form-ensurance-control m-1 rounded text-dark">
+                    {% csrf_token %}
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <div class="dropdown m-1">
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuClickableInside"
+                                      data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Фильтрация по столбцам
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
+                                  {% for column in columns %}
+                
+                                  <li class="dropdown-item">
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="checkbox" value="{{ column }}" name="include_columns[]" id="flexCheckDefault{{ column }}"
+                                                  {% if column in include_columns %} checked {% endif %}>
+                                          <label class="form-check-label" for="flexCheckDefault{{ column }}">
+                                              {{ column }}
+                                          </label>
+                                      </div>
+                                  </li>
+                
+                                  {% endfor %}
+                              </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="input-group m-1">
+                              <input type="text" aria-label="Кол-во строк" placeholder="Кол-во строк" class="form-control" id="rows_count" name="rows_count"
+                                      {% if rows_count %} value="{{ rows_count }}" {% endif %}>
+                              <button type="submit" class="btn btn-secondary text-dark">Применить</button>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div class="col-md-auto">
+                <form method="post" class="form-ensurance-control m-1 rounded text-dark">
+                    <ul class="nav">
+                        <li class="nav-item m-1">
+{#                            <a href="{% url "" include_columns rows_count %}"><button type="submit" class="btn btn-dark">Сохранить текущие данные</button></a>#}
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="m-1 p-1 pt-0">
         {{ table | safe }}
     </div>
 {% endblock %}

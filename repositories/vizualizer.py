@@ -1,3 +1,4 @@
+import copy
 from abc import ABC, abstractmethod
 
 import polars as pl
@@ -34,7 +35,7 @@ class BaseFormatter(ABC, Singleton):
         self.elements = []
 
     @abstractmethod
-    def convert_df_to_table(self, df_, rows_count):
+    def convert_df_to_table(self, df_, rows_count, exclude_rows):
         pass
 
     @abstractmethod
@@ -47,33 +48,29 @@ class BaseFormatter(ABC, Singleton):
 
 
 class HTMLFormatter(BaseFormatter):
-    html_table = '<table class="table">' \
-                 '{columns}' \
-                 '</table>'  # Главный объект (таблица)
-    html_body_template = '<tr>{row}</tr>'  # Одна строка
-    html_head_template = '<th scope="col">' \
-                         '{column_name}' \
-                         '</th>'  # Одно значение названия столбца
-    html_body_row_template = '<td>{row}</td>'  # Одно значение строки
+    async def convert_df_to_table(self, df_: DataFrame, rows_count, include_columns):
+        all_columns = copy.copy(df_.columns)
+        if include_columns:
+            print(include_columns, df_.columns)
+            for row in copy.copy(df_.columns):
+                if row not in include_columns:
+                    df_ = df_.drop(row)
 
-    df_: DataFrame = None
+        df_ = df_.with_columns([pl.col(column).round(3) for index, column in enumerate(df_.columns) if
+                                df_.dtypes[index] in [pl.Float32, pl.Float64, pl.Int32, pl.Int64]])
+        with Tag(self.elements, 'table', attributes={"class": "table table-hover"}):
+            await self.write_header(df_)
+            await self.write_body(df_, count=rows_count)
+        return "".join(self.elements), all_columns
 
-    def convert_df_to_table(self, df_: DataFrame, rows_count):
-        print(df_.dtypes)
-        df_ = df_.with_columns([pl.col(column).round(3) for index, column in enumerate(df_.columns) if df_.dtypes[index] in [pl.Float32, pl.Float64, pl.Int32, pl.Int64]])
-        with Tag(self.elements, 'table', attributes={"class": "table"}):
-            self.write_header(df_)
-            self.write_body(df_, count=rows_count)
-        return "".join(self.elements)
-
-    def write_header(self, df_):
+    async def write_header(self, df_):
         with Tag(self.elements, 'thead'):
             with Tag(self.elements, 'tr'):
                 for column_name in df_.columns:
                     with Tag(self.elements, 'th'):
                         self.elements.append(column_name)
 
-    def write_body(self, df_, count=1000):
+    async def write_body(self, df_, count=1000):
         if count is None:
             filter_func = lambda x: False
         else:

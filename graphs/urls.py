@@ -6,6 +6,7 @@ app_name = 'graphs'
 
 urlpatterns = [
     path('/open_graph/<str:graph_id>', views.open_graph, name='open_graph'),
+    path('/filter/<str:graph_id><int:rows_count>', views.open_graph, name='open_graph'),
     path('/upload_dataset/', views.upload_dataset, name='upload_dataset'),
     path('/upload_dataset/<str:is_created>', views.upload_dataset, name='upload_dataset')
 ]
