@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <form method="post" class="form-ensurance-control m-1 rounded text-dark" id="dataset">
+            {% csrf_token %}
+            <div class="form-floating mt-3">
+                <select class="form-select" id="floatingSelect" form="dataset"
+                        name="dataset_id" onchange="submitForm()">
+                  {% for graph in graphs %}
+                      <option {% if dataset.id == graph.id %} selected {% endif %} value="{{ graph.id }}">{{ graph.name }}</option>
+                  {% endfor %}
+                </select>
+                <label for="floatingSelect">Выберите датасет</label>
+            </div>
+
+            {% if dataset_columns %}
+                <div class="row mt-3">
+                    <div class="col-5">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelectX" form="dataset" name="x" required>
+                              {% for col in dataset_columns %}
+                                  <option style="background-color: {% if col.type == 'string' %} #cef88f {% else %} #bbf8f0 {% endif %}"
+                                          {% if x_name == col.name %} selected {% endif %}
+                                          value="{{ col.name }}">
+                                      {{ col.name }} (<b>{{ col.type }}</b>)</option>
+                              {% endfor %}
+                            </select>
+                            <label for="floatingSelectX">Значение по оси <b>Х</b></label>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelectY" form="dataset" name="y" required>
+                              {% for col in dataset_columns %}
+                                  <option style="background-color: {% if col.type == 'string' %} #cef88f {% else %} #bbf8f0 {% endif %}"
+                                          {% if y_name == col.name %} selected {% endif %}
+                                          value="{{ col.name }}">
+                                      {{ col.name }} (<b>{{ col.type }}</b>)</option>
+                              {% endfor %}
+                            </select>
+                            <label for="floatingSelectY">Значение по оси <b>Y</b></label>
+                        </div>
+                    </div>
+                    <div class="col-2 align-self-center">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="True" 
+                                 name="is_sorted" id="flexCheckDefault" {% if is_sorted %} checked {% endif %}>
+                          <label class="form-check-label" for="flexCheckDefault">
+                            Сортировка значений
+                          </label>
+                        </div>
+                    </div>
+                    {% if not available_diagrams %}
+                        <div class="col-2 pt-1 mt-2">
+                            <button class="btn btn-primary" type="submit" id="save_x_y">Далее</button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if available_diagrams %}
+                <div class="col-12 mt-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="floatingSelectDiagram" form="dataset" 
+                                name="diagram_method_attr_name" required>
+                          {% for diagram in available_diagrams %}
+                              <option value="{{ diagram.name }}" 
+                                      {% if diagram_method_attr_name == diagram.name %} selected {% endif %}>
+                                  {{ diagram.label }}
+                              </option>
+                          {% endfor %}
+                        </select>
+                        <label for="floatingSelectDiagram">Тип диаграммы</label>
+                    </div>
+                </div>
+                <div class="col-2 pt-1 mt-2">
+                    <button class="btn btn-primary" type="submit" id="save_diagram">Далее</button>
+                </div>
+            {% endif %}
+
+        </form>
+        {% if diagram %}
+            <div class="row justify-content-center">
+                <div class="col-6 align-self-center">
+                    {{ diagram|safe }}
+                    <style>
+                        html, body {
+                            overflow: visible;
+                        }
+                    </style>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function submitForm() {
+            const form = document.getElementById('dataset');
+            console.log(form)
+            form.submit();
+        }
+    </script>
+{% endblock %}

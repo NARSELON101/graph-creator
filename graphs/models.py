@@ -5,13 +5,15 @@ from django.db import models
 from django.urls import reverse
 
 
-class Graph(models.Model):
+class Dataset(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     path = models.FileField(verbose_name='Путь до файла', upload_to='graph_storage')
+    name = models.CharField(verbose_name='Название датасета', max_length=50, default='')
+    columns = models.JSONField('Столбцы', default=dict)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
-        return reverse("graphs:open_graph", kwargs={'graph_id': str(self.id)})
+        return reverse("graphs:open_dataset", kwargs={'dataset_id': str(self.id)})
 
     def __str__(self):
-        return f'{self.user.id}_{self.path}'
+        return self.name

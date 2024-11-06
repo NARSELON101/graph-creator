@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from graphs.models import Graph
+from graphs.models import Dataset
 
 
-@admin.register(Graph)
+@admin.register(Dataset)
 class GraphAdmin(admin.ModelAdmin):
     pass
